@@ -33,7 +33,7 @@ module.exports = {
   links: [
     {
       name: 'GitHub',
-      link: 'https://github.com/iRedScarf/onedrive-index',
+      link: 'https://github.com/SaltedFishesNG/onedrive-index/',
     },
   ],
   
