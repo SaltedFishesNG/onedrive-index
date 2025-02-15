@@ -103,6 +103,7 @@ const Navbar = () => {
             </div>
           </button>
 
+          <a href="https://github.com/iRedScarf/onedrive-index" target="_blank" className="flex items-center space-x-2 hover:opacity-80 dark:text-white">&copy;</a>
           {siteConfig.links.length !== 0 &&
             siteConfig.links.map((l: { name: string; link: string }) => (
               <a
