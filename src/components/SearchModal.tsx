@@ -194,7 +194,7 @@ export default function SearchModal({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <Dialog.Overlay className="fixed inset-0 bg-white/80 dark:bg-gray-800/80" />
+            <div className="fixed inset-0 bg-white/60 dark:bg-gray-800/60" onClick={closeSearchBox} aria-hidden="true" />
           </Transition.Child>
 
           <Transition.Child
