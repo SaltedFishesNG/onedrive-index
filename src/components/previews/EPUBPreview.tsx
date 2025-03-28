@@ -57,7 +57,7 @@ const EPUBPreview: FC<{ file: OdFileObject }> = ({ file }) => {
               url={`/api/raw/?path=${asPath}${hashedToken ? '&odpt=' + hashedToken : ''}`}
               getRendition={rendition => fixEpub(rendition)}
               loadingView={<Loading loadingText="Loading EPUB ..." />}
-              location={location}
+              location={location ?? null}
               locationChanged={onLocationChange}
               epubInitOptions={{ openAs: 'epub' }}
               epubOptions={{ flow: 'scrolled', allowPopups: true }}
