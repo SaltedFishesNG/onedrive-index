@@ -1,11 +1,9 @@
 import type { OdFileObject } from '../../types'
 
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import axios from 'axios'
 import toast from 'react-hot-toast'
-import { useAsync } from 'react-async-hook'
 import { useClipboard } from 'use-clipboard-copy'
 
 import { getBaseUrl } from '../../utils/getBaseUrl'
@@ -14,11 +12,7 @@ import { getStoredToken } from '../../utils/protectedRouteHandler'
 
 import { DownloadButton } from '../DownloadBtnGtoup'
 import { DownloadBtnContainer, PreviewContainer } from './Containers'
-import FourOhFour from '../FourOhFour'
-import Loading from '../Loading'
 import CustomEmbedLinkMenu from '../CustomEmbedLinkMenu'
-
-import 'plyr-react/plyr.css'
 
 const VideoPreview: FC<{ file: OdFileObject }> = ({ file }) => {
   const { asPath } = useRouter()
@@ -37,34 +31,13 @@ const VideoPreview: FC<{ file: OdFileObject }> = ({ file }) => {
   // We also format the raw video file for the in-browser player as well as all other players
   const videoUrl = `/api/raw/?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`
 
-  const isFlv = getExtension(file.name) === 'flv'
-  const {
-    loading,
-    error,
-    result: mpegts,
-  } = useAsync(async () => {
-    if (isFlv) {
-      return (await import('mpegts.js')).default
-    }
-  }, [isFlv])
-
   return (
     <>
       <CustomEmbedLinkMenu path={asPath} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <PreviewContainer>
-        {error ? (
-          <FourOhFour errorMsg={error.message} />
-        ) : loading && isFlv ? (
-          <Loading loadingText="Loading FLV extension..." />
-        ) : (
-          <div>
-            <h1>Filename: {file.name}</h1>
-            <h3>Video URL: {videoUrl}</h3>
-            <h3>Thumbnail: {thumbnail}</h3>
-            <h3>Subtitle: {subtitle}</h3>
-            <h3>Is FLV: {isFlv}</h3>
-          </div>
-        )}
+      	<video controls src={videoUrl} poster={thumbnail}>
+      	<track default src={subtitle} />
+      	</video>
       </PreviewContainer>
 
       <DownloadBtnContainer>
