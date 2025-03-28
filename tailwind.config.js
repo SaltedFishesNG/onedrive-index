@@ -23,10 +23,6 @@ module.exports = {
       orange: colors.orange,
     },
     extend: {
-      fontFamily: {
-        sans: [`"${siteConfig.googleFontSans}"`, '"Noto Sans SC"', ...defaultTheme.fontFamily.sans],
-        mono: [`"${siteConfig.googleFontMono}"`, ...defaultTheme.fontFamily.mono]
-      },
       colors: {
         gray: {
           850: '#222226'
