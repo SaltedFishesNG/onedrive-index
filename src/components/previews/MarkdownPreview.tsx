@@ -2,12 +2,8 @@ import { FC, CSSProperties, ReactNode } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import rehypeRaw from 'rehype-raw'
 import { LightAsync as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { tomorrowNight } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-
-import 'katex/dist/katex.min.css'
 
 import useFileContent from '../../utils/fetchOnMount'
 import FourOhFour from '../FourOhFour'
@@ -119,7 +115,6 @@ const MarkdownPreview: FC<{
             // Since type errors occur often in remark toolchain and the use is so common,
             // ignoring it shoudld be safe enough.
             // @ts-ignore
-            rehypePlugins={[rehypeKatex, rehypeRaw]}
             components={customRenderer}
           >
             {content}
