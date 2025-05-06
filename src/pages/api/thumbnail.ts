@@ -6,7 +6,7 @@ import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { checkAuthRoute, encodePath, getAccessToken } from '.'
-import apiConfig from '../../../config/api.config'
+import siteConfig from '../../../site.config'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const accessToken = await getAccessToken()
@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Set edge function caching for faster load times, if route is not protected, check docs:
   // https://vercel.com/docs/concepts/functions/edge-caching
-  if (odpt === '') res.setHeader('Cache-Control', apiConfig.cacheControlHeader)
+  if (odpt === '') res.setHeader('Cache-Control', siteConfig.cacheControlHeader)
 
   // Check whether the size is valid - must be one of 'large', 'medium', or 'small'
   if (size !== 'large' && size !== 'medium' && size !== 'small') {
@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const requestPath = encodePath(cleanPath)
   // Handle response from OneDrive API
-  const requestUrl = `${apiConfig.driveApi}/root${requestPath}`
+  const requestUrl = `${siteConfig.driveApi}/root${requestPath}`
   // Whether path is root, which requires some special treatment
   const isRoot = requestPath === ''
 

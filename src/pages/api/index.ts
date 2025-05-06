@@ -3,8 +3,7 @@ import { posix as pathPosix } from 'path'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-import apiConfig from '../../../config/api.config'
-import siteConfig from '../../../config/site.config'
+import siteConfig from '../../../site.config'
 import { revealObfuscatedToken } from '../../utils/oAuthHandler'
 import { compareHashedToken } from '../../utils/protectedRouteHandler'
 import { getOdAuthTokens, storeOdAuthTokens } from '../../utils/odAuthTokenStore'
@@ -52,12 +51,12 @@ export async function getAccessToken(): Promise<string> {
   // Fetch new access token with in storage refresh token
   const body = new URLSearchParams()
   body.append('client_id', clientId)
-  body.append('redirect_uri', apiConfig.redirectUri)
+  body.append('redirect_uri', siteConfig.redirectUri)
   body.append('client_secret', clientSecret)
   body.append('refresh_token', refreshToken)
   body.append('grant_type', 'refresh_token')
 
-  const resp = await axios.post(apiConfig.authApi, body, {
+  const resp = await axios.post(siteConfig.authApi, body, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
@@ -126,7 +125,7 @@ export async function checkAuthRoute(
   }
 
   try {
-    const token = await axios.get(`${apiConfig.driveApi}/root${encodePath(authTokenPath)}`, {
+    const token = await axios.get(`${siteConfig.driveApi}/root${encodePath(authTokenPath)}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
       params: {
         select: '@microsoft.graph.downloadUrl,file',
@@ -179,7 +178,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Set edge function caching for faster load times, check docs:
   // https://vercel.com/docs/concepts/functions/edge-caching
-  res.setHeader('Cache-Control', apiConfig.cacheControlHeader)
+  res.setHeader('Cache-Control', siteConfig.cacheControlHeader)
 
   // Sometimes the path parameter is defaulted to '[...path]' which we need to handle
   if (path === '[...path]') {
@@ -223,7 +222,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const requestPath = encodePath(cleanPath)
   // Handle response from OneDrive API
-  const requestUrl = `${apiConfig.driveApi}/root${requestPath}`
+  const requestUrl = `${siteConfig.driveApi}/root${requestPath}`
   // Whether path is root, which requires some special treatment
   const isRoot = requestPath === ''
 

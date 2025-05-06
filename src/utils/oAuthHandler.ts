@@ -1,7 +1,7 @@
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
 
-import apiConfig from '../../config/api.config'
+import siteConfig from '../../site.config'
 
 async function getConfig() {
   const res = await axios.get('/api/config')
@@ -25,7 +25,7 @@ export function revealObfuscatedToken(obfuscated: string): string {
 // Generate the Microsoft OAuth 2.0 authorization URL, used for requesting the authorisation code
 export async function generateAuthorisationUrl(): Promise<string> {
   const { clientId } = await getConfig() 
-  const { redirectUri, authApi, scope } = apiConfig
+  const { redirectUri, authApi, scope } = siteConfig
   const authUrl = authApi.replace('/token', '/authorize')
 
   // Construct URL parameters for OAuth2
@@ -43,7 +43,7 @@ export async function generateAuthorisationUrl(): Promise<string> {
 // http://localhost and URL parameter code. This function extracts the code from the request URL
 export function extractAuthCodeFromRedirected(url: string): string {
   // Return empty string if the url is not the defined redirect uri
-  if (!url.startsWith(apiConfig.redirectUri)) {
+  if (!url.startsWith(siteConfig.redirectUri)) {
     return ''
   }
 
@@ -62,7 +62,7 @@ export async function requestTokenWithAuthCode(code: string, config: any): Promi
   try {
     const clientId = config.clientId
     const clientSecret = revealObfuscatedToken(config.clientSecret)
-    const { redirectUri, authApi } = apiConfig
+    const { redirectUri, authApi } = siteConfig
 
     // Construct URL parameters for OAuth2
     const params = new URLSearchParams()
@@ -97,7 +97,7 @@ export async function requestTokenWithAuthCode(code: string, config: any): Promi
 // Verify the identity of the user with the access token and compare it with the userPrincipalName
 // in the Microsoft Graph API. If the userPrincipalName matches, proceed with token storing.
 export async function getAuthPersonInfo(accessToken: string) {
-  const profileApi = apiConfig.driveApi.replace('/drive', '')
+  const profileApi = siteConfig.driveApi.replace('/drive', '')
   return axios.get(profileApi, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

@@ -2,8 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
-import siteConfig from '../../../config/site.config'
-import apiConfig from '../../../config/api.config'
+import siteConfig from '../../../site.config'
 import Navbar from '../../components/Navbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getAccessToken } from '../api'
@@ -104,7 +103,7 @@ export default function OAuthStep1({ clientId, clientSecret }) {
                       REDIRECT_URI
                     </td>
                     <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400">
-                      <code className="font-mono text-sm">{apiConfig.redirectUri}</code>
+                      <code className="font-mono text-sm">{siteConfig.redirectUri}</code>
                     </td>
                   </tr>
                   <tr className="border-y bg-white dark:border-gray-700 dark:bg-gray-900">
@@ -112,7 +111,7 @@ export default function OAuthStep1({ clientId, clientSecret }) {
                       Auth API URL
                     </td>
                     <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400">
-                      <code className="font-mono text-sm">{apiConfig.authApi}</code>
+                      <code className="font-mono text-sm">{siteConfig.authApi}</code>
                     </td>
                   </tr>
                   <tr className="border-y bg-white dark:border-gray-700 dark:bg-gray-900">
@@ -120,7 +119,7 @@ export default function OAuthStep1({ clientId, clientSecret }) {
                       Drive API URL
                     </td>
                     <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400">
-                      <code className="font-mono text-sm">{apiConfig.driveApi}</code>
+                      <code className="font-mono text-sm">{siteConfig.driveApi}</code>
                     </td>
                   </tr>
                   <tr className="border-y bg-white dark:border-gray-700 dark:bg-gray-900">
@@ -128,7 +127,7 @@ export default function OAuthStep1({ clientId, clientSecret }) {
                       API Scope
                     </td>
                     <td className="whitespace-nowrap py-1 px-3 text-gray-500 dark:text-gray-400">
-                      <code className="font-mono text-sm">{apiConfig.scope}</code>
+                      <code className="font-mono text-sm">{siteConfig.scope}</code>
                     </td>
                   </tr>
                 </tbody>
@@ -138,7 +137,7 @@ export default function OAuthStep1({ clientId, clientSecret }) {
             <p className="py-1 text-sm font-medium">
                 <FontAwesomeIcon icon="exclamation-triangle" className="mr-1 text-yellow-400" /> If you see anything
                 missing or incorrect, you need to reconfigure{' '}
-                <code className="font-mono text-xs">/config/api.config.js</code> and redeploy this instance.
+                <code className="font-mono text-xs">/site.config.js</code> and redeploy this instance.
             </p>
 
             <div className="mb-2 mt-6 text-right">

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import siteConfig from '../../../config/site.config'
+import siteConfig from '../../../site.config'
 import Navbar from '../../components/Navbar'
 
 import { getAuthPersonInfo, requestTokenWithAuthCode, sendTokenToServer } from '../../utils/oAuthHandler'

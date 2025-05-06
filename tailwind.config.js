@@ -1,6 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 const colors = require('tailwindcss/colors')
-const siteConfig = require('./config/site.config')
 
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],

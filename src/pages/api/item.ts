@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { getAccessToken } from '.'
-import apiConfig from '../../../config/api.config'
+import siteConfig from '../../../site.config'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Get access token from storage
@@ -13,10 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Set edge function caching for faster load times, check docs:
   // https://vercel.com/docs/concepts/functions/edge-caching
-  res.setHeader('Cache-Control', apiConfig.cacheControlHeader)
+  res.setHeader('Cache-Control', siteConfig.cacheControlHeader)
 
   if (typeof id === 'string') {
-    const itemApi = `${apiConfig.driveApi}/items/${id}`
+    const itemApi = `${siteConfig.driveApi}/items/${id}`
 
     try {
       const { data } = await axios.get(itemApi, {

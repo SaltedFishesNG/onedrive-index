@@ -2,8 +2,7 @@ import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { encodePath, getAccessToken } from '.'
-import apiConfig from '../../../config/api.config'
-import siteConfig from '../../../config/site.config'
+import siteConfig from '../../../site.config'
 
 /**
  * Sanitize the search query
@@ -34,14 +33,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Set edge function caching for faster load times, check docs:
   // https://vercel.com/docs/concepts/functions/edge-caching
-  res.setHeader('Cache-Control', apiConfig.cacheControlHeader)
+  res.setHeader('Cache-Control', siteConfig.cacheControlHeader)
 
   if (typeof searchQuery === 'string') {
     // Construct Microsoft Graph Search API URL, and perform search only under the base directory
     const searchRootPath = encodePath('/')
     const encodedPath = searchRootPath === '' ? searchRootPath : searchRootPath + ':'
 
-    const searchApi = `${apiConfig.driveApi}/root${encodedPath}/search(q='${sanitiseQuery(searchQuery)}')`
+    const searchApi = `${siteConfig.driveApi}/root${encodedPath}/search(q='${sanitiseQuery(searchQuery)}')`
 
     try {
       const { data } = await axios.get(searchApi, {

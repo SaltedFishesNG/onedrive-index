@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import siteConfig from '../../../config/site.config'
+import siteConfig from '../../../site.config'
 import Navbar from '../../components/Navbar'
 import { LoadingIcon } from '../../components/Loading'
 import { extractAuthCodeFromRedirected, generateAuthorisationUrl } from '../../utils/oAuthHandler'
@@ -20,8 +20,12 @@ export async function getServerSideProps({ locale }) {
         destination: '/',
         permanent: false,
       },
-    }
+    };
   }
+  // Always return an object, even if accessToken is not available
+  return {
+    props: {}, // Return an empty props object to render the page
+  };
 }
 
 export default function OAuthStep2() {

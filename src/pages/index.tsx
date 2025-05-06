@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import siteConfig from '../../config/site.config'
+import siteConfig from '../../site.config'
 import Navbar from '../components/Navbar'
 import FileListing from '../components/FileListing'
 import Breadcrumb from '../components/Breadcrumb'
