@@ -1,10 +1,4 @@
 module.exports = {
-  // The clientId and clientSecret are used to authenticate the user with Microsoft Graph API using OAuth.
-  // If you are an E5 developer subscriber, set them in Vercel's environment variables `CLIENT_ID` and `CLIENT_SECRET`
-  // You would not need to change anything here if you can authenticate with your personal Microsoft account with OneDrive International.
-
-  // The redirectUri is the URL that the user will be redirected to after they have authenticated with Microsoft Graph API.
-  // Likewise, you would not need to change redirectUri if you are using your personal Microsoft account with OneDrive International.
   redirectUri: 'http://localhost',
 
   // These are the URLs of the OneDrive API endpoints. You would not need to change anything here if you are using OneDrive International
@@ -26,7 +20,7 @@ module.exports = {
   // It should be placed under the /public directory of your GitHub project (not your OneDrive folder!), and referenced here by its relative path to /public.
   // Now you can use FontAwesomeIcon as the logo (it can follow the system's day/night mode to change color), 
   // and the writing format is 'iconPrefix-iconName', e.g. icon: 'fab-github',
-  // If the FontAwesomIcon you choose does not display properly, you may need to import it in `src/pages/_app.tsx`.
+  // If the FontAwesomIcon you choose does not display properly, you may need to import it in `./pages/_app.tsx`.
   // However, the browser's tab bar icon is STILL determined by /public/favicon.ico
   icon: 'fas-cube', // or icon: '/icons/128.png', to use a image.
 
@@ -52,7 +46,7 @@ module.exports = {
   links: [
     {
       name: 'GitHub',
-      link: 'https://github.com/SaltedFishesNG/onedrive-index/',
+      link: 'https://github.com/SaltedFishesNG/onedrive-index',
     },
   ],
 
