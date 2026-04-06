@@ -12,7 +12,7 @@ import { getAccessToken } from '../api'
 
 export async function getServerSideProps({ locale }) {
   // Get accessToken using getAccessToken function
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken()
   // If the accessToken exists, redirect to the home page
   if (accessToken) {
     return {
@@ -20,12 +20,12 @@ export async function getServerSideProps({ locale }) {
         destination: '/',
         permanent: false,
       },
-    };
+    }
   }
   // Always return an object, even if accessToken is not available
   return {
     props: {}, // Return an empty props object to render the page
-  };
+  }
 }
 
 export default function OAuthStep2() {
@@ -63,15 +63,13 @@ export default function OAuthStep2() {
                 priority
               />
             </div>
-            <h3 className="mb-4 text-center text-xl font-medium">
-              Welcome to your new OneDrive-Index 🎉
-            </h3>
+            <h3 className="mb-4 text-center text-xl font-medium">Welcome to your new OneDrive-Index 🎉</h3>
 
-            <h3 className="mt-4 mb-2 text-lg font-medium">Step 2/3: Get authorisation code</h3>
+            <h3 className="mb-2 mt-4 text-lg font-medium">Step 2/3: Get authorisation code</h3>
 
             <p className="py-1 text-sm font-medium text-red-400">
-                <FontAwesomeIcon icon="exclamation-circle" className="mr-1" /> If you are not the owner of this website,
-                stop now, as continuing with this process may expose your personal files in OneDrive.
+              <FontAwesomeIcon icon="exclamation-circle" className="mr-1" /> If you are not the owner of this website,
+              stop now, as continuing with this process may expose your personal files in OneDrive.
             </p>
 
             <div
@@ -82,7 +80,7 @@ export default function OAuthStep2() {
                 }
               }}
             >
-              <div className="absolute top-0 right-0 p-1 opacity-60">
+              <div className="absolute right-0 top-0 p-1 opacity-60">
                 <FontAwesomeIcon icon="external-link-alt" />
               </div>
               <pre className="overflow-x-auto whitespace-pre-wrap p-2">
@@ -91,12 +89,12 @@ export default function OAuthStep2() {
             </div>
 
             <p className="py-1">
-                The OAuth link for getting the authorisation code has been created. Click on the link above to get the{' '}
-                <b className="underline decoration-yellow-400 decoration-wavy">authorisation code</b>. Your browser will
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                open a new tab to Microsoft's account login page. After logging in and authenticating with your
-                Microsoft account, you will be redirected to a blank page on localhost. Paste{' '}
-                <b className="underline decoration-teal-500 decoration-wavy">the entire redirected URL</b> down below.
+              The OAuth link for getting the authorisation code has been created. Click on the link above to get the{' '}
+              <b className="underline decoration-yellow-400 decoration-wavy">authorisation code</b>. Your browser will
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              open a new tab to Microsoft's account login page. After logging in and authenticating with your Microsoft
+              account, you will be redirected to a blank page on localhost. Paste{' '}
+              <b className="underline decoration-teal-500 decoration-wavy">the entire redirected URL</b> down below.
             </p>
 
             <input

@@ -5,6 +5,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     clientId: process.env.CLIENT_ID || '',
     clientSecret: process.env.CLIENT_SECRET || '',
     userPrincipalName: process.env.USER_PRINCIPAL_NAME || '',
-    baseDirectory: process.env.BASE_DIRECTORY || '/'
+    baseDirectory: process.env.BASE_DIRECTORY || '/',
   })
 }

@@ -12,7 +12,6 @@ import { getStoredToken } from '../utils/protectedRouteHandler'
  * @param props.progress Current downloading and compression progress (returned by jszip metadata)
  */
 export function DownloadingToast({ router, progress }: { router: NextRouter; progress?: string }) {
-
   return (
     <div className="flex items-center space-x-2">
       <div className="w-56">
@@ -76,7 +75,7 @@ export async function downloadMultipleFiles({
       name,
       fetch(url).then(r => {
         return r.blob()
-      })
+      }),
     )
   })
 
@@ -130,7 +129,7 @@ export async function downloadTreelikeMultipleFiles({
       .reverse()
       .findIndex(
         ({ path: parent }) =>
-          path.substring(0, parent.length) === parent && path.substring(parent.length + 1).indexOf('/') === -1
+          path.substring(0, parent.length) === parent && path.substring(parent.length + 1).indexOf('/') === -1,
       )
     if (i === -1) {
       throw new Error('File array does not satisfy requirement')
@@ -143,7 +142,7 @@ export async function downloadTreelikeMultipleFiles({
     } else {
       dir.file(
         name,
-        fetch(url!).then(r => r.blob())
+        fetch(url!).then(r => r.blob()),
       )
     }
   }

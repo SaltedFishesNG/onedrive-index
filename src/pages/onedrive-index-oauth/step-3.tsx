@@ -13,14 +13,14 @@ import { getAccessToken } from '../api'
 
 export async function getServerSideProps({ query, locale }) {
   const { authCode } = query
-  const clientId = process.env.CLIENT_ID || '';
-  const clientSecret = process.env.CLIENT_SECRET || '';
-  const userPrincipalName = process.env.USER_PRINCIPAL_NAME || '';
-  
+  const clientId = process.env.CLIENT_ID || ''
+  const clientSecret = process.env.CLIENT_SECRET || ''
+  const userPrincipalName = process.env.USER_PRINCIPAL_NAME || ''
+
   // Check if OAuth authentication has been completed
-  const existingAccessToken = await getAccessToken();
+  const existingAccessToken = await getAccessToken()
   if (existingAccessToken) {
-  // If OAuth authentication has been completed, redirect to the homepage
+    // If OAuth authentication has been completed, redirect to the homepage
     return {
       redirect: {
         destination: '/',
@@ -40,7 +40,7 @@ export async function getServerSideProps({ query, locale }) {
       },
     }
   }
-  const config = { clientId, clientSecret, userPrincipalName };
+  const config = { clientId, clientSecret, userPrincipalName }
   const response = await requestTokenWithAuthCode(authCode, config)
 
   // If error response, return invalid
@@ -69,7 +69,15 @@ export async function getServerSideProps({ query, locale }) {
   }
 }
 
-export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime, refreshToken, error, description, errorUri }) {
+export default function OAuthStep3({
+  userPrincipalName,
+  accessToken,
+  expiryTime,
+  refreshToken,
+  error,
+  description,
+  errorUri,
+}) {
   const router = useRouter()
   const [expiryTimeLeft, setExpiryTimeLeft] = useState(expiryTime)
 
@@ -86,7 +94,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
   const [buttonContent, setButtonContent] = useState(
     <div>
       <span>Store tokens</span> <FontAwesomeIcon icon="key" />
-    </div>
+    </div>,
   )
   const [buttonError, setButtonError] = useState(false)
 
@@ -95,7 +103,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
     setButtonContent(
       <div>
         <span>Storing tokens</span> <LoadingIcon className="ml-1 inline h-4 w-4 animate-spin" />
-      </div>
+      </div>,
     )
 
     // verify identity of the authenticated user with the Microsoft Graph API
@@ -105,7 +113,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
       setButtonContent(
         <div>
           <span>Error validating identify, restart</span> <FontAwesomeIcon icon="exclamation-circle" />
-        </div>
+        </div>,
       )
       return
     }
@@ -114,7 +122,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
       setButtonContent(
         <div>
           <span>Do not pretend to be the site owner</span> <FontAwesomeIcon icon="exclamation-circle" />
-        </div>
+        </div>,
       )
       return
     }
@@ -125,7 +133,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
         setButtonContent(
           <div>
             <span>Stored! Going home...</span> <FontAwesomeIcon icon="check" />
-          </div>
+          </div>,
         )
         setTimeout(() => {
           router.push('/')
@@ -136,7 +144,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
         setButtonContent(
           <div>
             <span>Error storing the token</span> <FontAwesomeIcon icon="exclamation-circle" />
-          </div>
+          </div>,
         )
       })
   }
@@ -161,35 +169,31 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
                 priority
               />
             </div>
-            <h3 className="mb-4 text-center text-xl font-medium">
-              Welcome to your new OneDrive-Index 🎉
-            </h3>
+            <h3 className="mb-4 text-center text-xl font-medium">Welcome to your new OneDrive-Index 🎉</h3>
 
-            <h3 className="mt-4 mb-2 text-lg font-medium">Step 3/3: Get access and refresh tokens</h3>
+            <h3 className="mb-2 mt-4 text-lg font-medium">Step 3/3: Get access and refresh tokens</h3>
             {error ? (
               <div>
                 <p className="py-1 font-medium text-red-500">
                   <FontAwesomeIcon icon="exclamation-circle" className="mr-2" />
-                  <span>
-                    Whoops, looks like we got a problem.
-                  </span>
+                  <span>Whoops, looks like we got a problem.</span>
                 </p>
                 <p className="my-2 whitespace-pre-line rounded border border-gray-400/20 bg-gray-50 p-2 font-mono text-sm opacity-80 dark:bg-gray-800">
                   {description}
                 </p>
                 {errorUri && (
                   <p>
-                      Check out{' '}
-                      <a
-                        href={errorUri}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline dark:text-blue-500"
-                      >
-                        {/* eslint-disable-next-line react/no-unescaped-entities */}
-                        Microsoft's official explanation
-                      </a>{' '}
-                      on the error message.
+                    Check out{' '}
+                    <a
+                      href={errorUri}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline dark:text-blue-500"
+                    >
+                      {/* eslint-disable-next-line react/no-unescaped-entities */}
+                      Microsoft's official explanation
+                    </a>{' '}
+                    on the error message.
                   </p>
                 )}
                 <div className="mb-2 mt-6 text-right">
@@ -211,7 +215,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
                     <li>
                       <FontAwesomeIcon icon={['far', 'check-circle']} className="text-green-500" />{' '}
                       <span>
-                        Acquired access_token: 
+                        Acquired access_token:
                         <code className="font-mono text-sm opacity-80">{`${accessToken.substring(0, 60)}...`}</code>
                       </span>
                     </li>
@@ -220,7 +224,7 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
                     <li>
                       <FontAwesomeIcon icon={['far', 'check-circle']} className="text-green-500" />{' '}
                       <span>
-                        Acquired refresh_token: 
+                        Acquired refresh_token:
                         <code className="font-mono text-sm opacity-80">{`${refreshToken.substring(0, 60)}...`}</code>
                       </span>
                     </li>
@@ -228,14 +232,15 @@ export default function OAuthStep3({ userPrincipalName, accessToken, expiryTime,
                 </ol>
 
                 <p className="py-1 text-sm font-medium text-teal-500">
-                  <FontAwesomeIcon icon="exclamation-circle" className="mr-1" />{' '}
-                  These tokens may take a few seconds to populate after you click the button below.
-                  If you go back home and still see the welcome page telling you to re-authenticate,
-                  revisit home and do a hard refresh.
+                  <FontAwesomeIcon icon="exclamation-circle" className="mr-1" /> These tokens may take a few seconds to
+                  populate after you click the button below. If you go back home and still see the welcome page telling
+                  you to re-authenticate, revisit home and do a hard refresh.
                 </p>
                 <p className="py-1">
-                    Final step, click the button below to store these tokens persistently before they expire after {Math.floor(expiryTimeLeft / 60)} minutes {expiryTimeLeft - Math.floor(expiryTimeLeft / 60) * 60} seconds.
-                    Don&apos;t worry, after storing them, OneDrive-Index will take care of token refreshes and updates after your site goes live.
+                  Final step, click the button below to store these tokens persistently before they expire after{' '}
+                  {Math.floor(expiryTimeLeft / 60)} minutes {expiryTimeLeft - Math.floor(expiryTimeLeft / 60) * 60}{' '}
+                  seconds. Don&apos;t worry, after storing them, OneDrive-Index will take care of token refreshes and
+                  updates after your site goes live.
                 </p>
 
                 <div className="mb-2 mt-6 text-right">

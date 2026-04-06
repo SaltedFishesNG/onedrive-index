@@ -35,9 +35,9 @@ const VideoPreview: FC<{ file: OdFileObject }> = ({ file }) => {
     <>
       <CustomEmbedLinkMenu path={asPath} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <PreviewContainer>
-      	<video controls src={videoUrl} poster={thumbnail}>
-      	<track default src={subtitle} />
-      	</video>
+        <video controls src={videoUrl} poster={thumbnail}>
+          <track default src={subtitle} />
+        </video>
       </PreviewContainer>
 
       <DownloadBtnContainer>

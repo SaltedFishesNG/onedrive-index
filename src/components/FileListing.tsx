@@ -271,7 +271,7 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
         .filter(c => selected[c.id])
         .map(
           c =>
-            `${baseUrl}/api/raw/?path=${path}/${encodeURIComponent(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`
+            `${baseUrl}/api/raw/?path=${path}/${encodeURIComponent(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
         )
         .join('\n')
     }
@@ -306,7 +306,8 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
       })
         .then(() => {
           setFolderGenerating({ ...folderGenerating, [id]: false })
-          toast.success('Finished downloading folder.', { id: toastId })})
+          toast.success('Finished downloading folder.', { id: toastId })
+        })
         .catch(() => {
           setFolderGenerating({ ...folderGenerating, [id]: false })
           toast.error('Failed to download folder.', { id: toastId })
@@ -338,10 +339,8 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
         {!onlyOnePage && (
           <div className="rounded-b bg-white dark:bg-gray-900 dark:text-gray-100">
             <div className="border-b border-gray-200 p-3 text-center font-mono text-sm text-gray-400 dark:border-gray-700">
-              - showing {size} page(s) 
-              {isLoadingMore
-                ? ` of ${folderChildren.length} file(s) -`
-                : ` of ${folderChildren.length} file(s) -`}
+              - showing {size} page(s)
+              {isLoadingMore ? ` of ${folderChildren.length} file(s) -` : ` of ${folderChildren.length} file(s) -`}
             </div>
             <button
               className={`flex w-full items-center justify-center space-x-2 p-3 disabled:cursor-not-allowed ${

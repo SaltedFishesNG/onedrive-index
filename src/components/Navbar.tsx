@@ -51,23 +51,23 @@ const Navbar = () => {
     }, 1000)
   }
 
-  const icon = siteConfig.icon;
-  let IconComponent;
-  let iconProps = {};
+  const icon = siteConfig.icon
+  let IconComponent
+  let iconProps = {}
 
   if (icon.startsWith('/')) {
     // If the icon is a URL, use the Image component
-    IconComponent = Image;
-    iconProps = { src: icon, alt: 'icon', width: '25', height: '25', priority: true };
+    IconComponent = Image
+    iconProps = { src: icon, alt: 'icon', width: '25', height: '25', priority: true }
   } else {
     // If the icon is a FontAwesome icon name, use the FontAwesomeIcon component
     if (!icon.includes('-')) {
-      throw new Error('To use FontAwesomIcon as logo must include IconPrefix and IconName, separated by a dash `-`.');
+      throw new Error('To use FontAwesomIcon as logo must include IconPrefix and IconName, separated by a dash `-`.')
     }
-    IconComponent = FontAwesomeIcon;
-    const iconPrefix = icon.substring(0, icon.indexOf('-')).toLowerCase() as IconPrefix;
-    const iconName = icon.substring(icon.indexOf('-') + 1).toLowerCase() as IconName;
-    iconProps = { icon: [iconPrefix, iconName] };
+    IconComponent = FontAwesomeIcon
+    const iconPrefix = icon.substring(0, icon.indexOf('-')).toLowerCase() as IconPrefix
+    const iconName = icon.substring(icon.indexOf('-') + 1).toLowerCase() as IconName
+    iconProps = { icon: [iconPrefix, iconName] }
   }
 
   return (
@@ -77,7 +77,7 @@ const Navbar = () => {
       <SearchModal searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
 
       <div className="mx-auto flex w-full items-center justify-between space-x-4 px-4 py-1">
-        <Link href="/" passHref className="flex items-center space-x-2 py-2 hover:opacity-80 dark:text-white md:p-2">
+        <Link href="/" passHref className="flex items-center space-x-2 py-2 hover:opacity-80 md:p-2 dark:text-white">
           {/*<Image src={siteConfig.icon} alt="icon" width="25" height="25" priority />*/}
           <IconComponent {...iconProps} />
           <span className="hidden font-bold sm:block">{siteConfig.title}</span>
@@ -85,12 +85,20 @@ const Navbar = () => {
 
         <div className="flex flex-1 items-center space-x-4 text-gray-700 md:flex-initial">
           <button
-            className="flex flex-1 items-center justify-between rounded-lg bg-gray-100 px-2.5 py-1.5 hover:opacity-80 dark:bg-gray-800 dark:text-white md:w-48"
+            className="flex flex-1 items-center justify-between rounded-lg bg-gray-100 px-2.5 py-1.5 hover:opacity-80 md:w-48 dark:bg-gray-800 dark:text-white"
             onClick={openSearchBox}
           >
             <div className="flex items-center space-x-2">
               <FontAwesomeIcon className="h-4 w-4" icon="search" />
-              <span className="truncate text-sm font-medium">Type to <span style={{display: "inline-block", padding: "0 0.5em", border: "1px solid", borderRadius: '0.5em'}}>/</span> search</span>
+              <span className="truncate text-sm font-medium">
+                Type to{' '}
+                <span
+                  style={{ display: 'inline-block', padding: '0 0.5em', border: '1px solid', borderRadius: '0.5em' }}
+                >
+                  /
+                </span>{' '}
+                search
+              </span>
             </div>
           </button>
 
@@ -133,16 +141,20 @@ const Navbar = () => {
         <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" open={isOpen} onClose={() => setIsOpen(false)}>
           <div className="min-h-screen px-4 text-center">
             <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-100"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-white/60 dark:bg-gray-800/60" onClick={() => setIsOpen(false)} aria-hidden="true" />
-          </Transition.Child>
+              as={Fragment}
+              enter="ease-out duration-100"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div
+                className="fixed inset-0 bg-white/60 dark:bg-gray-800/60"
+                onClick={() => setIsOpen(false)}
+                aria-hidden="true"
+              />
+            </Transition.Child>
 
             {/* This element is to trick the browser into centering the modal contents. */}
             <span className="inline-block h-screen align-middle" aria-hidden="true">
@@ -163,8 +175,8 @@ const Navbar = () => {
                 </Dialog.Title>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    These tokens are used to authenticate yourself into password protected folders,
-                    clearing them means that you will need to re-enter the passwords again.
+                    These tokens are used to authenticate yourself into password protected folders, clearing them means
+                    that you will need to re-enter the passwords again.
                   </p>
                 </div>
 

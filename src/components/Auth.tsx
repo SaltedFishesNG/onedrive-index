@@ -22,8 +22,8 @@ const Auth: FC<{ redirect: string }> = ({ redirect }) => {
       <div className="text-lg font-bold text-gray-900 dark:text-gray-100">Enter Password</div>
 
       <p className="text-sm font-medium text-gray-500">
-        This route (the folder itself and the files inside) is password protected.
-        If you know the password, please enter it below.
+        This route (the folder itself and the files inside) is password protected. If you know the password, please
+        enter it below.
       </p>
 
       <div className="flex items-center space-x-2">
