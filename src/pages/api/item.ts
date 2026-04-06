@@ -1,8 +1,8 @@
-import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { getAccessToken } from '.'
 import siteConfig from '../../../site.config'
+import { FetchError, fetchJson } from '../../utils/fetch'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Get access token from storage
@@ -19,15 +19,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const itemApi = `${siteConfig.driveApi}/items/${id}`
 
     try {
-      const { data } = await axios.get(itemApi, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params: {
-          select: 'id,name,parentReference',
-        },
-      })
+      const data = await fetchJson(
+        itemApi,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+        { select: 'id,name,parentReference' },
+      )
       res.status(200).json(data)
-    } catch (error: any) {
-      res.status(error?.response?.status ?? 500).json({ error: error?.response?.data ?? 'Internal server error.' })
+    } catch (error) {
+      if (error instanceof FetchError) {
+        res.status(error.status).json({ error: error.data ?? 'Internal server error.' })
+        return
+      }
+
+      res.status(500).json({ error: 'Internal server error.' })
     }
   } else {
     res.status(400).json({ error: 'Invalid driveItem ID.' })

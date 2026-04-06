@@ -1,9 +1,9 @@
 import { posix as pathPosix } from 'path'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import axios from 'axios'
 
 import siteConfig from '../../../site.config'
+import { FetchError, fetchJson, fetchText } from '../../utils/fetch'
 import { revealObfuscatedToken } from '../../utils/oAuthHandler'
 import { compareHashedToken } from '../../utils/protectedRouteHandler'
 import { getOdAuthTokens, storeOdAuthTokens } from '../../utils/odAuthTokenStore'
@@ -56,21 +56,25 @@ export async function getAccessToken(): Promise<string> {
   body.append('refresh_token', refreshToken)
   body.append('grant_type', 'refresh_token')
 
-  const resp = await axios.post(siteConfig.authApi, body, {
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
+  const resp = await fetchJson<{
+    expires_in?: string
+    access_token?: string
+    refresh_token?: string
+  }>(siteConfig.authApi, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
   })
 
-  if ('access_token' in resp.data && 'refresh_token' in resp.data) {
-    const { expires_in, access_token, refresh_token } = resp.data
+  if ('access_token' in resp && 'refresh_token' in resp) {
+    const { expires_in, access_token, refresh_token } = resp
     await storeOdAuthTokens({
-      accessToken: access_token,
-      accessTokenExpiry: parseInt(expires_in),
-      refreshToken: refresh_token,
+      accessToken: access_token!,
+      accessTokenExpiry: parseInt(expires_in!),
+      refreshToken: refresh_token!,
     })
     console.log('Fetch new access token with stored refresh token.')
-    return access_token
+    return access_token!
   }
 
   return ''
@@ -114,7 +118,7 @@ export function getAuthTokenPath(path: string) {
 export async function checkAuthRoute(
   cleanPath: string,
   accessToken: string,
-  odTokenHeader: string
+  odTokenHeader: string,
 ): Promise<{ code: 200 | 401 | 404 | 500; message: string }> {
   // Handle authentication through .password
   const authTokenPath = getAuthTokenPath(cleanPath)
@@ -125,28 +129,27 @@ export async function checkAuthRoute(
   }
 
   try {
-    const token = await axios.get(`${siteConfig.driveApi}/root${encodePath(authTokenPath)}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
-        select: '@microsoft.graph.downloadUrl,file',
-      },
-    })
+    const token = await fetchJson<{ '@microsoft.graph.downloadUrl': string }>(
+      `${siteConfig.driveApi}/root${encodePath(authTokenPath)}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      { select: '@microsoft.graph.downloadUrl,file' },
+    )
 
     // Handle request and check for header 'od-protected-token'
-    const odProtectedToken = await axios.get(token.data['@microsoft.graph.downloadUrl'])
+    const odProtectedToken = await fetchText(token['@microsoft.graph.downloadUrl'])
     // console.log(odTokenHeader, odProtectedToken.data.trim())
 
     if (
       !compareHashedToken({
         odTokenHeader: odTokenHeader,
-        dotPassword: odProtectedToken.data.toString(),
+        dotPassword: odProtectedToken.toString(),
       })
     ) {
       return { code: 401, message: 'Password required.' }
     }
-  } catch (error: any) {
+  } catch (error) {
     // Password file not found, fallback to 404
-    if (error?.response?.status === 404) {
+    if (error instanceof FetchError && error.status === 404) {
       return { code: 404, message: "You didn't set a password." }
     } else {
       return { code: 500, message: 'Internal server error.' }
@@ -198,6 +201,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(400).json({ error: 'Sort query invalid.' })
     return
   }
+  if (typeof next !== 'string') {
+    res.status(400).json({ error: 'Next query invalid.' })
+    return
+  }
 
   const accessToken = await getAccessToken()
 
@@ -232,16 +239,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await runCorsMiddleware(req, res)
     res.setHeader('Cache-Control', 'no-cache')
 
-    const { data } = await axios.get(requestUrl, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
+    const data = await fetchJson<{ '@microsoft.graph.downloadUrl'?: string }>(
+      requestUrl,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      {
         // OneDrive international version fails when only selecting the downloadUrl (what a stupid bug)
         select: 'id,@microsoft.graph.downloadUrl',
       },
-    })
+    )
 
-    if ('@microsoft.graph.downloadUrl' in data) {
-      res.redirect(data['@microsoft.graph.downloadUrl'])
+    const downloadUrl = data['@microsoft.graph.downloadUrl']
+    if (downloadUrl) {
+      res.redirect(downloadUrl)
     } else {
       res.status(404).json({ error: 'No download url found.' })
     }
@@ -250,17 +259,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Querying current path identity (file or folder) and follow up query childrens in folder
   try {
-    const { data: identityData } = await axios.get(requestUrl, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
-        select: 'name,size,id,lastModifiedDateTime,folder,file,video,image',
-      },
-    })
+    const identityData = await fetchJson<any>(
+      requestUrl,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      { select: 'name,size,id,lastModifiedDateTime,folder,file,video,image' },
+    )
 
     if ('folder' in identityData) {
-      const { data: folderData } = await axios.get(`${requestUrl}${isRoot ? '' : ':'}/children`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params: {
+      const folderData = await fetchJson<any>(
+        `${requestUrl}${isRoot ? '' : ':'}/children`,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+        {
           ...{
             select: 'name,size,id,lastModifiedDateTime,folder,file,video,image',
             $top: siteConfig.maxItems,
@@ -268,7 +277,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           ...(next ? { $skipToken: next } : {}),
           ...(sort ? { $orderby: sort } : {}),
         },
-      })
+      )
 
       // Extract next page token from full @odata.nextLink
       const nextPage = folderData['@odata.nextLink']
@@ -285,8 +294,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     res.status(200).json({ file: identityData })
     return
-  } catch (error: any) {
-    res.status(error?.response?.code ?? 500).json({ error: error?.response?.data ?? 'Internal server error.' })
+  } catch (error) {
+    if (error instanceof FetchError) {
+      res.status(error.status).json({ error: error.data ?? 'Internal server error.' })
+      return
+    }
+
+    res.status(500).json({ error: 'Internal server error.' })
     return
   }
 }

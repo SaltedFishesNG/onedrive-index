@@ -1,11 +1,19 @@
-import axios from 'axios'
 import CryptoJS from 'crypto-js'
 
 import siteConfig from '../../site.config'
+import { FetchError, fetchJson } from './fetch'
+
+type MicrosoftProfile = {
+  userPrincipalName: string
+}
 
 async function getConfig() {
-  const res = await axios.get('/api/config')
-  return res.data
+  return fetchJson<{
+    clientId: string
+    clientSecret: string
+    userPrincipalName: string
+    baseDirectory: string
+  }>('/api/config')
 }
 
 // Just a disguise to obfuscate required tokens (including but not limited to client secret,
@@ -24,7 +32,7 @@ export function revealObfuscatedToken(obfuscated: string): string {
 
 // Generate the Microsoft OAuth 2.0 authorization URL, used for requesting the authorisation code
 export async function generateAuthorisationUrl(): Promise<string> {
-  const { clientId } = await getConfig() 
+  const { clientId } = await getConfig()
   const { redirectUri, authApi, scope } = siteConfig
   const authUrl = authApi.replace('/token', '/authorize')
 
@@ -55,7 +63,10 @@ export function extractAuthCodeFromRedirected(url: string): string {
 // After a successful authorisation, the code returned from the Microsoft OAuth 2.0 authorization URL
 // will be used to request an access token. This function requests the access token with the authorisation code
 // and returns the access token and refresh token on success.
-export async function requestTokenWithAuthCode(code: string, config: any): Promise<
+export async function requestTokenWithAuthCode(
+  code: string,
+  config: any,
+): Promise<
   | { expiryTime: string; accessToken: string; refreshToken: string }
   | { error: string; errorDescription: string; errorUri: string }
 > {
@@ -73,24 +84,31 @@ export async function requestTokenWithAuthCode(code: string, config: any): Promi
     params.append('grant_type', 'authorization_code')
 
     // Request access token
-    return axios
-      .post(authApi, params, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
+    return fetchJson<{
+      expires_in: string
+      access_token: string
+      refresh_token: string
+    }>(authApi, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    })
       .then(resp => {
-        const { expires_in, access_token, refresh_token } = resp.data
+        const { expires_in, access_token, refresh_token } = resp
         return { expiryTime: expires_in, accessToken: access_token, refreshToken: refresh_token }
       })
       .catch(err => {
-        const { error, error_description, error_uri } = err.response.data
+        if (!(err instanceof FetchError)) {
+          throw err
+        }
+
+        const { error, error_description, error_uri } = err.data
         return { error, errorDescription: error_description, errorUri: error_uri }
       })
   } catch (error) {
-    console.error("Failed to get config:", error)
-    const errorMessage = error instanceof Error ? error.message : "Unknown error"
-    return { error: "Failed to get config", errorDescription: errorMessage, errorUri: "" }
+    console.error('Failed to get config:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return { error: 'Failed to get config', errorDescription: errorMessage, errorUri: '' }
   }
 }
 
@@ -98,25 +116,28 @@ export async function requestTokenWithAuthCode(code: string, config: any): Promi
 // in the Microsoft Graph API. If the userPrincipalName matches, proceed with token storing.
 export async function getAuthPersonInfo(accessToken: string) {
   const profileApi = siteConfig.driveApi.replace('/drive', '')
-  return axios.get(profileApi, {
+  const data = await fetchJson<MicrosoftProfile>(profileApi, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   })
+  return { data, status: 200 }
 }
 
 export async function sendTokenToServer(accessToken: string, refreshToken: string, expiryTime: string) {
-  return await axios.post(
-    '/api',
-    {
+  const response = await fetch('/api', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
       obfuscatedAccessToken: obfuscateToken(accessToken),
       accessTokenExpiry: parseInt(expiryTime),
       obfuscatedRefreshToken: obfuscateToken(refreshToken),
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  )
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to store token: ${response.status}`)
+  }
+
+  return response
 }

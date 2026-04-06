@@ -2,11 +2,11 @@ import type { OdThumbnail } from '../../types'
 
 import { posix as pathPosix } from 'path'
 
-import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { checkAuthRoute, encodePath, getAccessToken } from '.'
 import siteConfig from '../../../site.config'
+import { FetchError, fetchJson } from '../../utils/fetch'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const accessToken = await getAccessToken()
@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const isRoot = requestPath === ''
 
   try {
-    const { data } = await axios.get(`${requestUrl}${isRoot ? '' : ':'}/thumbnails`, {
+    const data = await fetchJson<{ value?: OdThumbnail[] }>(`${requestUrl}${isRoot ? '' : ':'}/thumbnails`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
 
@@ -68,8 +68,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       res.status(400).json({ error: "The item doesn't have a valid thumbnail." })
     }
-  } catch (error: any) {
-    res.status(error?.response?.status).json({ error: error?.response?.data ?? 'Internal server error.' })
+  } catch (error) {
+    if (error instanceof FetchError) {
+      res.status(error.status).json({ error: error.data ?? 'Internal server error.' })
+      return
+    }
+
+    res.status(500).json({ error: 'Internal server error.' })
   }
   return
 }

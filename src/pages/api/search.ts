@@ -1,8 +1,8 @@
-import axios from 'axios'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 import { encodePath, getAccessToken } from '.'
 import siteConfig from '../../../site.config'
+import { FetchError, fetchJson } from '../../utils/fetch'
 
 /**
  * Sanitize the search query
@@ -43,16 +43,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const searchApi = `${siteConfig.driveApi}/root${encodedPath}/search(q='${sanitiseQuery(searchQuery)}')`
 
     try {
-      const { data } = await axios.get(searchApi, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        params: {
+      const data = await fetchJson<{ value: unknown[] }>(
+        searchApi,
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+        {
           select: 'id,name,file,folder,parentReference',
           top: siteConfig.maxItems,
         },
-      })
+      )
       res.status(200).json(data.value)
-    } catch (error: any) {
-      res.status(error?.response?.status ?? 500).json({ error: error?.response?.data ?? 'Internal server error.' })
+    } catch (error) {
+      if (error instanceof FetchError) {
+        res.status(error.status).json({ error: error.data ?? 'Internal server error.' })
+        return
+      }
+
+      res.status(500).json({ error: 'Internal server error.' })
     }
   } else {
     res.status(200).json([])

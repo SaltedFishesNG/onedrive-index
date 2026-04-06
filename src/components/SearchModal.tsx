@@ -1,4 +1,3 @@
-import axios from 'axios'
 import useSWR, { SWRResponse } from 'swr'
 import { Dispatch, Fragment, SetStateAction, useState } from 'react'
 import AwesomeDebouncePromise from 'awesome-debounce-promise'
@@ -13,6 +12,7 @@ import type { OdDriveItem, OdSearchResult } from '../types'
 import { LoadingIcon } from './Loading'
 
 import { getFileIcon } from '../utils/getFileIcon'
+import { fetchJson } from '../utils/fetch'
 import { fetcher } from '../utils/fetchWithSWR'
 import siteConfig from '../../site.config'
 
@@ -46,7 +46,7 @@ function mapAbsolutePath(path: string): string {
 function useDriveItemSearch() {
   const [query, setQuery] = useState('')
   const searchDriveItem = async (q: string) => {
-    const { data } = await axios.get<OdSearchResult>(`/api/search/?q=${q}`)
+    const data = await fetchJson<OdSearchResult>(`/api/search/?q=${encodeURIComponent(q)}`)
 
     // Map parentReference to the absolute path of the search result
     data.map(item => {
@@ -114,7 +114,7 @@ function SearchResultItemTemplate({
 function SearchResultItemLoadRemote({ result }: { result: OdSearchResult[number] }) {
   const { data, error }: SWRResponse<OdDriveItem, { status: number; message: any }> = useSWR(
     [`/api/item/?id=${result.id}`],
-    fetcher
+    fetcher,
   )
 
   if (error) {
@@ -129,12 +129,7 @@ function SearchResultItemLoadRemote({ result }: { result: OdSearchResult[number]
   }
   if (!data) {
     return (
-      <SearchResultItemTemplate
-        driveItem={result}
-        driveItemPath={''}
-        itemDescription="Loading ..."
-        disabled={true}
-      />
+      <SearchResultItemTemplate driveItem={result} driveItemPath={''} itemDescription="Loading ..." disabled={true} />
     )
   }
 
@@ -194,7 +189,11 @@ export default function SearchModal({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-white/60 dark:bg-gray-800/60" onClick={closeSearchBox} aria-hidden="true" />
+            <div
+              className="fixed inset-0 bg-white/60 dark:bg-gray-800/60"
+              onClick={closeSearchBox}
+              aria-hidden="true"
+            />
           </Transition.Child>
 
           <Transition.Child

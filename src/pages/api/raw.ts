@@ -1,10 +1,11 @@
 import { posix as pathPosix } from 'path'
+import { Readable } from 'stream'
 
 import type { NextApiRequest, NextApiResponse } from 'next'
-import axios, { AxiosResponseHeaders } from 'axios'
 import Cors from 'cors'
 
 import { driveApi, cacheControlHeader } from '../../../site.config'
+import { FetchError, fetchJson, fetchResponse } from '../../utils/fetch'
 import { encodePath, getAccessToken, checkAuthRoute } from '.'
 
 // CORS middleware for raw links: https://nextjs.org/docs/api-routes/api-middlewares
@@ -61,33 +62,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // Handle response from OneDrive API
     const requestUrl = `${driveApi}/root${encodePath(cleanPath)}`
-    const { data } = await axios.get(requestUrl, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      params: {
+    const data = await fetchJson<{ size?: number; '@microsoft.graph.downloadUrl'?: string }>(
+      requestUrl,
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+      {
         // OneDrive international version fails when only selecting the downloadUrl (what a stupid bug)
         select: 'id,size,@microsoft.graph.downloadUrl',
       },
-    })
+    )
 
-    if ('@microsoft.graph.downloadUrl' in data) {
+    const downloadUrl = data['@microsoft.graph.downloadUrl']
+    if (downloadUrl) {
       // Only proxy raw file content response for files up to 4MB
-      if (proxy && 'size' in data && data['size'] < 4194304) {
-        const { headers, data: stream } = await axios.get(data['@microsoft.graph.downloadUrl'] as string, {
-          responseType: 'stream',
-        })
+      if (proxy && typeof data.size === 'number' && data.size < 4194304) {
+        const response = await fetchResponse(downloadUrl)
+        const headers = Object.fromEntries(response.headers.entries())
         headers['Cache-Control'] = cacheControlHeader
         // Send data stream as response
-        res.writeHead(200, headers as AxiosResponseHeaders)
-        stream.pipe(res)
+        res.writeHead(200, headers)
+        if (!response.body) {
+          res.end()
+          return
+        }
+
+        Readable.fromWeb(response.body as any).pipe(res)
       } else {
-        res.redirect(data['@microsoft.graph.downloadUrl'])
+        res.redirect(downloadUrl)
       }
     } else {
       res.status(404).json({ error: 'No download url found.' })
     }
     return
-  } catch (error: any) {
-    res.status(error?.response?.status ?? 500).json({ error: error?.response?.data ?? 'Internal server error.' })
+  } catch (error) {
+    if (error instanceof FetchError) {
+      res.status(error.status).json({ error: error.data ?? 'Internal server error.' })
+      return
+    }
+
+    res.status(500).json({ error: 'Internal server error.' })
     return
   }
 }
