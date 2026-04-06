@@ -11,11 +11,9 @@ import { Fragment, useEffect, useState } from 'react'
 
 import siteConfig from '../../site.config'
 import SearchModal from './SearchModal'
-import useDeviceOS from '../utils/useDeviceOS'
 
 const Navbar = () => {
   const router = useRouter()
-  const os = useDeviceOS()
 
   const [tokenPresent, setTokenPresent] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -23,7 +21,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false)
   const openSearchBox = () => setSearchOpen(true)
 
-  useHotkeys(`${os === 'mac' ? 'meta' : 'ctrl'}+k`, e => {
+  useHotkeys(`/`, e => {
     openSearchBox()
     e.preventDefault()
   })
@@ -71,7 +69,7 @@ const Navbar = () => {
     const iconName = icon.substring(icon.indexOf('-') + 1).toLowerCase() as IconName;
     iconProps = { icon: [iconPrefix, iconName] };
   }
-  
+
   return (
     <div className="sticky top-0 z-[100] border-b border-gray-900/10 bg-white bg-opacity-80 backdrop-blur-md dark:border-gray-500/30 dark:bg-gray-900">
       <Toaster />
@@ -92,14 +90,7 @@ const Navbar = () => {
           >
             <div className="flex items-center space-x-2">
               <FontAwesomeIcon className="h-4 w-4" icon="search" />
-              <span className="truncate text-sm font-medium">Search ...</span>
-            </div>
-
-            <div className="hidden items-center space-x-1 md:flex">
-              <div className="rounded-lg bg-gray-200 px-2 py-1 text-xs font-medium dark:bg-gray-700">
-                {os === 'mac' ? '⌘' : 'Ctrl'}
-              </div>
-              <div className="rounded-lg bg-gray-200 px-2 py-1 text-xs font-medium dark:bg-gray-700">K</div>
+              <span className="truncate text-sm font-medium">Type to <span style={{display: "inline-block", padding: "0 0.5em", border: "1px solid", borderRadius: '0.5em'}}>/</span> search</span>
             </div>
           </button>
 
