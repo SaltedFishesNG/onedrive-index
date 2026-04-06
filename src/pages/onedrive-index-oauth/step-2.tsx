@@ -99,10 +99,6 @@ export default function OAuthStep2() {
                 <b className="underline decoration-teal-500 decoration-wavy">the entire redirected URL</b> down below.
             </p>
 
-            <div className="my-4 mx-auto w-2/3 overflow-hidden rounded">
-              <Image src="/images/step-2-screenshot.png" width={1466} height={607} alt="step 2 screenshot" />
-            </div>
-
             <input
               className={`my-2 w-full flex-1 rounded border bg-gray-50 p-2 font-mono text-sm font-medium focus:outline-none focus:ring dark:bg-gray-800 dark:text-white ${
                 authCode
