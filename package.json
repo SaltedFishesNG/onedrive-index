@@ -7,7 +7,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
     "format": "prettier 'src/**/*.{js,ts,jsx,tsx}' --write"
   },
   "dependencies": {
