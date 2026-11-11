@@ -159,7 +159,7 @@ export default function OAuthStep3({
         <Navbar />
 
         <div className="mx-auto w-full max-w-5xl p-4">
-          <div className="rounded bg-white p-3 dark:bg-gray-900 dark:text-gray-100">
+          <div className="rounded-sm bg-white p-3 dark:bg-gray-900 dark:text-gray-100">
             <div className="mx-auto w-52">
               <Image
                 src="/images/fabulous-celebration.png"
@@ -171,14 +171,14 @@ export default function OAuthStep3({
             </div>
             <h3 className="mb-4 text-center text-xl font-medium">Welcome to your new OneDrive-Index 🎉</h3>
 
-            <h3 className="mb-2 mt-4 text-lg font-medium">Step 3/3: Get access and refresh tokens</h3>
+            <h3 className="mt-4 mb-2 text-lg font-medium">Step 3/3: Get access and refresh tokens</h3>
             {error ? (
               <div>
                 <p className="py-1 font-medium text-red-500">
                   <FontAwesomeIcon icon="exclamation-circle" className="mr-2" />
                   <span>Whoops, looks like we got a problem.</span>
                 </p>
-                <p className="my-2 whitespace-pre-line rounded border border-gray-400/20 bg-gray-50 p-2 font-mono text-sm opacity-80 dark:bg-gray-800">
+                <p className="my-2 rounded-sm border border-gray-400/20 bg-gray-50 p-2 font-mono text-sm whitespace-pre-line opacity-80 dark:bg-gray-800">
                   {description}
                 </p>
                 {errorUri && (
@@ -196,9 +196,9 @@ export default function OAuthStep3({
                     on the error message.
                   </p>
                 )}
-                <div className="mb-2 mt-6 text-right">
+                <div className="mt-6 mb-2 text-right">
                   <button
-                    className="rounded-lg bg-gradient-to-br from-red-500 to-orange-400 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-red-200 disabled:cursor-not-allowed disabled:grayscale dark:focus:ring-red-800"
+                    className="rounded-lg bg-linear-to-br from-red-500 to-orange-400 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-linear-to-bl focus:ring-4 focus:ring-red-200 disabled:cursor-not-allowed disabled:grayscale dark:focus:ring-red-800"
                     onClick={() => {
                       router.push('/onedrive-index-oauth/step-1')
                     }}
@@ -243,9 +243,9 @@ export default function OAuthStep3({
                   updates after your site goes live.
                 </p>
 
-                <div className="mb-2 mt-6 text-right">
+                <div className="mt-6 mb-2 text-right">
                   <button
-                    className={`rounded-lg bg-gradient-to-br px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 ${
+                    className={`rounded-lg bg-linear-to-br px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-linear-to-bl focus:ring-4 ${
                       buttonError
                         ? 'from-red-500 to-orange-400 focus:ring-red-200 dark:focus:ring-red-800'
                         : 'from-green-500 to-teal-300 focus:ring-green-200 dark:focus:ring-green-800'

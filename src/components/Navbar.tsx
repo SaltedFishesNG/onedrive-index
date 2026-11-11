@@ -7,15 +7,28 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState, useSyncExternalStore } from 'react'
 
 import siteConfig from '../../site.config'
 import SearchModal from './SearchModal'
 
+function subscribeToTokens(callback: () => void) {
+  window.addEventListener('storage', callback)
+  window.addEventListener('local-storage', callback)
+  return () => {
+    window.removeEventListener('storage', callback)
+    window.removeEventListener('local-storage', callback)
+  }
+}
+
+function hasStoredToken() {
+  return siteConfig.protectedRoutes.some(r => localStorage.getItem(r) !== null)
+}
+
 const Navbar = () => {
   const router = useRouter()
 
-  const [tokenPresent, setTokenPresent] = useState(false)
+  const tokenPresent = useSyncExternalStore(subscribeToTokens, hasStoredToken, () => false)
   const [isOpen, setIsOpen] = useState(false)
 
   const [searchOpen, setSearchOpen] = useState(false)
@@ -25,18 +38,6 @@ const Navbar = () => {
     openSearchBox()
     e.preventDefault()
   })
-
-  useEffect(() => {
-    const storedToken = () => {
-      for (const r of siteConfig.protectedRoutes) {
-        if (localStorage.hasOwnProperty(r)) {
-          return true
-        }
-      }
-      return false
-    }
-    setTokenPresent(storedToken())
-  }, [])
 
   const clearTokens = () => {
     setIsOpen(false)
@@ -71,7 +72,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="sticky top-0 z-[100] border-b border-gray-900/10 bg-white bg-opacity-80 backdrop-blur-md dark:border-gray-500/30 dark:bg-gray-900">
+    <div className="sticky top-0 z-100 border-b border-gray-900/10 bg-white/80 backdrop-blur-md dark:border-gray-500/30 dark:bg-gray-900">
       <Toaster />
 
       <SearchModal searchOpen={searchOpen} setSearchOpen={setSearchOpen} />
@@ -191,13 +192,13 @@ const Navbar = () => {
 
                 <div className="mt-8 flex items-center justify-end">
                   <button
-                    className="mr-3 inline-flex items-center justify-center space-x-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300"
+                    className="mr-3 inline-flex items-center justify-center space-x-2 rounded-sm bg-blue-500 px-4 py-2 text-white hover:bg-blue-400 focus:ring-3 focus:ring-blue-300 focus:outline-hidden"
                     onClick={() => setIsOpen(false)}
                   >
                     Cancel
                   </button>
                   <button
-                    className="inline-flex items-center justify-center space-x-2 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-400 focus:outline-none focus:ring focus:ring-red-300"
+                    className="inline-flex items-center justify-center space-x-2 rounded-sm bg-red-500 px-4 py-2 text-white hover:bg-red-400 focus:ring-3 focus:ring-red-300 focus:outline-hidden"
                     onClick={() => clearTokens()}
                   >
                     <FontAwesomeIcon icon={['far', 'trash-alt']} />

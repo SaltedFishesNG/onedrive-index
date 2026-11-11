@@ -53,7 +53,7 @@ export default function OAuthStep2() {
         <Navbar />
 
         <div className="mx-auto w-full max-w-5xl p-4">
-          <div className="rounded bg-white p-3 dark:bg-gray-900 dark:text-gray-100">
+          <div className="rounded-sm bg-white p-3 dark:bg-gray-900 dark:text-gray-100">
             <div className="mx-auto w-52">
               <Image
                 src="/images/fabulous-come-back-later.png"
@@ -65,7 +65,7 @@ export default function OAuthStep2() {
             </div>
             <h3 className="mb-4 text-center text-xl font-medium">Welcome to your new OneDrive-Index 🎉</h3>
 
-            <h3 className="mb-2 mt-4 text-lg font-medium">Step 2/3: Get authorisation code</h3>
+            <h3 className="mt-4 mb-2 text-lg font-medium">Step 2/3: Get authorisation code</h3>
 
             <p className="py-1 text-sm font-medium text-red-400">
               <FontAwesomeIcon icon="exclamation-circle" className="mr-1" /> If you are not the owner of this website,
@@ -73,17 +73,17 @@ export default function OAuthStep2() {
             </p>
 
             <div
-              className="relative my-2 cursor-pointer rounded border border-gray-500/50 bg-gray-50 font-mono text-sm hover:opacity-80 dark:bg-gray-800"
+              className="relative my-2 cursor-pointer rounded-sm border border-gray-500/50 bg-gray-50 font-mono text-sm hover:opacity-80 dark:bg-gray-800"
               onClick={() => {
                 if (oAuthUrl) {
                   window.open(oAuthUrl)
                 }
               }}
             >
-              <div className="absolute right-0 top-0 p-1 opacity-60">
+              <div className="absolute top-0 right-0 p-1 opacity-60">
                 <FontAwesomeIcon icon="external-link-alt" />
               </div>
-              <pre className="overflow-x-auto whitespace-pre-wrap p-2">
+              <pre className="overflow-x-auto p-2 whitespace-pre-wrap">
                 <code>{oAuthUrl}</code>
               </pre>
             </div>
@@ -98,7 +98,7 @@ export default function OAuthStep2() {
             </p>
 
             <input
-              className={`my-2 w-full flex-1 rounded border bg-gray-50 p-2 font-mono text-sm font-medium focus:outline-none focus:ring dark:bg-gray-800 dark:text-white ${
+              className={`my-2 w-full flex-1 rounded border bg-gray-50 p-2 font-mono text-sm font-medium focus:ring-3 focus:outline-hidden dark:bg-gray-800 dark:text-white ${
                 authCode
                   ? 'border-green-500/50 focus:ring-green-500/30 dark:focus:ring-green-500/40'
                   : 'border-red-500/50 focus:ring-red-500/30 dark:focus:ring-red-500/40'
@@ -114,7 +114,7 @@ export default function OAuthStep2() {
             />
 
             <p className="py-1">The authorisation code extracted is:</p>
-            <p className="my-2 overflow-hidden truncate rounded border border-gray-400/20 bg-gray-50 p-2 font-mono text-sm opacity-80 dark:bg-gray-800">
+            <p className="my-2 truncate overflow-hidden rounded-sm border border-gray-400/20 bg-gray-50 p-2 font-mono text-sm opacity-80 dark:bg-gray-800">
               {authCode ?? <span className="animate-pulse">Waiting for code...</span>}
             </p>
 
@@ -124,9 +124,9 @@ export default function OAuthStep2() {
                 : '❌ No valid code extracted.'}
             </p>
 
-            <div className="mb-2 mt-6 text-right">
+            <div className="mt-6 mb-2 text-right">
               <button
-                className="rounded-lg bg-gradient-to-br from-green-500 to-cyan-400 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-green-200 disabled:cursor-not-allowed disabled:grayscale dark:focus:ring-green-800"
+                className="rounded-lg bg-linear-to-br from-green-500 to-cyan-400 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-linear-to-bl focus:ring-4 focus:ring-green-200 disabled:cursor-not-allowed disabled:grayscale dark:focus:ring-green-800"
                 disabled={authCode === ''}
                 onClick={() => {
                   setButtonLoading(true)

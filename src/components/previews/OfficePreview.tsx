@@ -1,8 +1,6 @@
 import type { OdFileObject } from '../../types'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC } from 'react'
 import { useRouter } from 'next/router'
-
-import Preview from 'preview-office-docs'
 
 import DownloadButtonGroup from '../DownloadBtnGtoup'
 import { DownloadBtnContainer } from './Containers'
@@ -13,21 +11,20 @@ const OfficePreview: FC<{ file: OdFileObject }> = ({ file }) => {
   const { asPath } = useRouter()
   const hashedToken = getStoredToken(asPath)
 
-  const docContainer = useRef<HTMLDivElement>(null)
-  const [docContainerWidth, setDocContainerWidth] = useState(600)
-
   const docUrl = encodeURIComponent(
     `${getBaseUrl()}/api/raw?path=${asPath}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
   )
 
-  useEffect(() => {
-    setDocContainerWidth(docContainer.current ? docContainer.current.offsetWidth : 600)
-  }, [])
-
   return (
     <div>
-      <div className="overflow-scroll" ref={docContainer} style={{ maxHeight: '90vh' }}>
-        <Preview url={docUrl} width={docContainerWidth.toString()} height="600" />
+      <div className="overflow-scroll" style={{ maxHeight: '90vh' }}>
+        <iframe
+          title={`Preview ${file.name}`}
+          src={`https://view.officeapps.live.com/op/embed.aspx?src=${docUrl}`}
+          width="100%"
+          height="600"
+          frameBorder="0"
+        />
       </div>
       <DownloadBtnContainer>
         <DownloadButtonGroup />

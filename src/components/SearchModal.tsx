@@ -92,15 +92,15 @@ function SearchResultItemTemplate({
     <Link
       href={driveItemPath}
       passHref
-      className={`flex items-center space-x-4 border-b border-gray-400/30 px-4 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-850 ${
+      className={`dark:hover:bg-gray-850 flex items-center space-x-4 border-b border-gray-400/30 px-4 py-1.5 hover:bg-gray-50 ${
         disabled ? 'pointer-events-none cursor-not-allowed' : 'cursor-pointer'
       }`}
     >
       <FontAwesomeIcon icon={driveItem.file ? getFileIcon(driveItem.name) : ['far', 'folder']} />
       <div>
-        <div className="text-sm font-medium leading-8">{driveItem.name}</div>
+        <div className="text-sm leading-8 font-medium">{driveItem.name}</div>
         <div
-          className={`overflow-hidden truncate font-mono text-xs opacity-60 ${
+          className={`truncate overflow-hidden font-mono text-xs opacity-60 ${
             itemDescription === 'Loading ...' && 'animate-pulse'
           }`}
         >
@@ -178,7 +178,7 @@ export default function SearchModal({
 
   return (
     <Transition appear show={searchOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 z-[200] overflow-y-auto" onClose={closeSearchBox}>
+      <Dialog as="div" className="fixed inset-0 z-200 overflow-y-auto" onClose={closeSearchBox}>
         <div className="min-h-screen px-4 text-center">
           <Transition.Child
             as={Fragment}
@@ -205,7 +205,7 @@ export default function SearchModal({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="my-12 inline-block w-full max-w-3xl transform overflow-hidden rounded border border-gray-400/30 text-left shadow-xl transition-all">
+            <div className="my-12 inline-block w-full max-w-3xl transform overflow-hidden rounded-sm border border-gray-400/30 text-left shadow-xl transition-all">
               <Dialog.Title
                 as="h3"
                 className="flex items-center space-x-4 border-b border-gray-400/30 bg-gray-50 p-4 dark:bg-gray-800 dark:text-white"
@@ -214,7 +214,7 @@ export default function SearchModal({
                 <input
                   type="text"
                   id="search-box"
-                  className="w-full bg-transparent focus:outline-none focus-visible:outline-none"
+                  className="w-full bg-transparent focus:outline-hidden focus-visible:outline-hidden"
                   placeholder="Search ..."
                   value={query}
                   onChange={e => setQuery(e.target.value)}

@@ -7,7 +7,6 @@ import toast from 'react-hot-toast'
 import { useClipboard } from 'use-clipboard-copy'
 
 import { getBaseUrl } from '../../utils/getBaseUrl'
-import { getExtension } from '../../utils/getFileIcon'
 import { getStoredToken } from '../../utils/protectedRouteHandler'
 
 import { DownloadButton } from '../DownloadBtnGtoup'

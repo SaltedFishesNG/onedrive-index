@@ -13,6 +13,7 @@ This project is a fork from [iRedScarf/onedrive-index](https://github.com/iRedSc
 3. Import to Vercel and add an Upstash integration.
 4. Trigger a redeploy.
 
+Styles use Tailwind CSS 4 through `@tailwindcss/postcss`. Supported browsers are Chrome/Edge 111+, Safari 16.4+, and Firefox 128+.
 
 **Necessary Variables:**
 

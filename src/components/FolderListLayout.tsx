@@ -15,15 +15,15 @@ const FileListItem: FC<{ fileContent: OdFolderChildren }> = ({ fileContent: c })
   return (
     <div className="grid cursor-pointer grid-cols-10 items-center space-x-2 px-3 py-2.5">
       <div className="col-span-10 flex items-center space-x-2 truncate md:col-span-6" title={c.name}>
-        <div className="w-5 flex-shrink-0 text-center">
+        <div className="w-5 shrink-0 text-center">
           <ChildIcon child={c} />
         </div>
         <ChildName name={c.name} folder={Boolean(c.folder)} />
       </div>
-      <div className="col-span-3 hidden flex-shrink-0 font-mono text-sm text-gray-700 md:block dark:text-gray-500">
+      <div className="col-span-3 hidden shrink-0 font-mono text-sm text-gray-700 md:block dark:text-gray-500">
         {formatModifiedDateTime(c.lastModifiedDateTime)}
       </div>
-      <div className="col-span-1 hidden flex-shrink-0 truncate font-mono text-sm text-gray-700 md:block dark:text-gray-500">
+      <div className="col-span-1 hidden shrink-0 truncate font-mono text-sm text-gray-700 md:block dark:text-gray-500">
         {humanFileSize(c.size)}
       </div>
     </div>
@@ -51,21 +51,21 @@ const FolderListLayout = ({
   const getItemPath = (name: string) => `${path === '/' ? '' : path}/${encodeURIComponent(name)}`
 
   return (
-    <div className="rounded bg-white shadow-sm dark:bg-gray-900 dark:text-gray-100">
+    <div className="rounded-sm bg-white shadow-xs dark:bg-gray-900 dark:text-gray-100">
       <div className="grid grid-cols-12 items-center space-x-2 border-b border-gray-900/10 px-3 dark:border-gray-500/30">
-        <div className="col-span-12 py-2 text-xs font-bold uppercase tracking-widest text-gray-600 md:col-span-6 dark:text-gray-300">
+        <div className="col-span-12 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase md:col-span-6 dark:text-gray-300">
           Name
         </div>
-        <div className="col-span-3 hidden text-xs font-bold uppercase tracking-widest text-gray-600 md:block dark:text-gray-300">
+        <div className="col-span-3 hidden text-xs font-bold tracking-widest text-gray-600 uppercase md:block dark:text-gray-300">
           Last Modified
         </div>
-        <div className="hidden text-xs font-bold uppercase tracking-widest text-gray-600 md:block dark:text-gray-300">
+        <div className="hidden text-xs font-bold tracking-widest text-gray-600 uppercase md:block dark:text-gray-300">
           Size
         </div>
-        <div className="hidden text-xs font-bold uppercase tracking-widest text-gray-600 md:block dark:text-gray-300">
+        <div className="hidden text-xs font-bold tracking-widest text-gray-600 uppercase md:block dark:text-gray-300">
           Actions
         </div>
-        <div className="hidden text-xs font-bold uppercase tracking-widest text-gray-600 md:block dark:text-gray-300">
+        <div className="hidden text-xs font-bold tracking-widest text-gray-600 uppercase md:block dark:text-gray-300">
           <div className="hidden p-1.5 text-gray-700 md:flex dark:text-gray-400">
             <Checkbox
               checked={totalSelected}
@@ -75,7 +75,7 @@ const FolderListLayout = ({
             />
             <button
               title="Copy selected files permalink"
-              className="cursor-pointer rounded p-1.5 hover:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-white dark:hover:bg-gray-600 disabled:dark:text-gray-600 disabled:hover:dark:bg-gray-900"
+              className="cursor-pointer rounded-sm p-1.5 hover:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-white dark:hover:bg-gray-600 dark:disabled:text-gray-600 dark:disabled:hover:bg-gray-900"
               disabled={totalSelected === 0}
               onClick={() => {
                 clipboard.copy(handleSelectedPermalink(getBaseUrl()))
@@ -89,7 +89,7 @@ const FolderListLayout = ({
             ) : (
               <button
                 title="Download selected files"
-                className="cursor-pointer rounded p-1.5 hover:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-white dark:hover:bg-gray-600 disabled:dark:text-gray-600 disabled:hover:dark:bg-gray-900"
+                className="cursor-pointer rounded-sm p-1.5 hover:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-white dark:hover:bg-gray-600 dark:disabled:text-gray-600 dark:disabled:hover:bg-gray-900"
                 disabled={totalSelected === 0}
                 onClick={handleSelectedDownload}
               >
@@ -102,7 +102,7 @@ const FolderListLayout = ({
 
       {folderChildren.map((c: OdFolderChildren) => (
         <div
-          className="grid grid-cols-12 transition-all duration-100 hover:bg-gray-100 dark:hover:bg-gray-850"
+          className="dark:hover:bg-gray-850 grid grid-cols-12 transition-all duration-100 hover:bg-gray-100"
           key={c.id}
         >
           <Link
@@ -117,7 +117,7 @@ const FolderListLayout = ({
             <div className="hidden p-1.5 text-gray-700 md:flex dark:text-gray-400">
               <span
                 title="Copy folder permalink"
-                className="cursor-pointer rounded px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="cursor-pointer rounded-sm px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
                 onClick={() => {
                   clipboard.copy(`${getBaseUrl()}${`${path === '/' ? '' : path}/${encodeURIComponent(c.name)}`}`)
                   toast('Copied folder permalink.', { icon: '👌' })
@@ -130,7 +130,7 @@ const FolderListLayout = ({
               ) : (
                 <span
                   title="Download folder"
-                  className="cursor-pointer rounded px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
+                  className="cursor-pointer rounded-sm px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
                   onClick={() => {
                     const p = `${path === '/' ? '' : path}/${encodeURIComponent(c.name)}`
                     handleFolderDownload(p, c.id, c.name)()
@@ -144,7 +144,7 @@ const FolderListLayout = ({
             <div className="hidden p-1.5 text-gray-700 md:flex dark:text-gray-400">
               <span
                 title="Copy raw file permalink"
-                className="cursor-pointer rounded px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="cursor-pointer rounded-sm px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
                 onClick={() => {
                   clipboard.copy(
                     `${getBaseUrl()}/api/raw?path=${getItemPath(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`,
@@ -156,7 +156,7 @@ const FolderListLayout = ({
               </span>
               <a
                 title="Download file"
-                className="cursor-pointer rounded px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
+                className="cursor-pointer rounded-sm px-1.5 py-1 hover:bg-gray-300 dark:hover:bg-gray-600"
                 href={`/api/raw?path=${getItemPath(c.name)}${hashedToken ? `&odpt=${hashedToken}` : ''}`}
               >
                 <FontAwesomeIcon icon={['far', 'arrow-alt-circle-down']} />

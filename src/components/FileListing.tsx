@@ -118,7 +118,7 @@ export const Checkbox: FC<{
   return (
     <span
       title={title}
-      className="inline-flex cursor-pointer items-center rounded p-1.5 hover:bg-gray-300 dark:hover:bg-gray-600"
+      className="inline-flex cursor-pointer items-center rounded-sm p-1.5 hover:bg-gray-300 dark:hover:bg-gray-600"
       onClick={handleClick}
     >
       <input
@@ -135,7 +135,7 @@ export const Checkbox: FC<{
 
 export const Downloading: FC<{ title: string; style: string }> = ({ title, style }) => {
   return (
-    <span title={title} className={`${style} rounded`} role="status">
+    <span title={title} className={`${style} rounded-sm`} role="status">
       <LoadingIcon
         // Use fontawesome far theme via class `svg-inline--fa` to get style `vertical-align` only
         // for consistent icon alignment, as class `align-*` cannot satisfy it
@@ -344,7 +344,7 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
             </div>
             <button
               className={`flex w-full items-center justify-center space-x-2 p-3 disabled:cursor-not-allowed ${
-                isLoadingMore || isReachingEnd ? 'opacity-60' : 'hover:bg-gray-100 dark:hover:bg-gray-850'
+                isLoadingMore || isReachingEnd ? 'opacity-60' : 'dark:hover:bg-gray-850 hover:bg-gray-100'
               }`}
               onClick={() => setSize(size + 1)}
               disabled={isLoadingMore || isReachingEnd}
