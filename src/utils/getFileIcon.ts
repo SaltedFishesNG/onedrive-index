@@ -89,6 +89,11 @@ const extensions = {
   epub: icons.book,
   mobi: icons.book,
   azw3: icons.book,
+  azw: icons.book,
+  prc: icons.book,
+  fb2: icons.book,
+  fbz: icons.book,
+  cbz: icons.book,
 
   url: icons.link,
 }
@@ -115,7 +120,7 @@ export function getExtension(fileName: string): string {
 }
 
 export function getFileIcon(fileName: string, flags?: { video?: boolean }): [IconPrefix, IconName] {
-  const extension = getExtension(fileName)
+  const extension = fileName.toLowerCase().endsWith('.fb2.zip') ? 'fbz' : getExtension(fileName)
   let icon = hasKey(extensions, extension) ? extensions[extension] : icons.file
 
   // Files with '.ts' extensions may be TypeScript files or TS Video files, we check for the flag 'video'

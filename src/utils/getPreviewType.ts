@@ -4,12 +4,11 @@ export const preview = {
   markdown: 'markdown',
   image: 'image',
   text: 'text',
-  pdf: 'pdf',
   code: 'code',
   video: 'video',
   audio: 'audio',
   office: 'ms-office',
-  epub: 'epub',
+  book: 'book',
   url: 'url',
 }
 
@@ -23,8 +22,6 @@ export const extensions = {
   md: preview.markdown,
   markdown: preview.markdown,
   mdown: preview.markdown,
-
-  pdf: preview.pdf,
 
   doc: preview.office,
   docx: preview.office,
@@ -76,7 +73,15 @@ export const extensions = {
   opus: preview.audio,
   flac: preview.audio,
 
-  epub: preview.epub,
+  pdf: preview.book,
+  epub: preview.book,
+  mobi: preview.book,
+  azw: preview.book,
+  azw3: preview.book,
+  prc: preview.book,
+  fb2: preview.book,
+  fbz: preview.book,
+  cbz: preview.book,
 
   url: preview.url,
 }
